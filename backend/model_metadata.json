@@ -1,0 +1,266 @@
+{
+  "model_type": "XGBoost Multi-Location Regressor",
+  "target": "log1p(total_demand_kwh)",
+  "features": [
+    "location_enc",
+    "lat",
+    "lon",
+    "climate",
+    "n_buildings_norm",
+    "year",
+    "month",
+    "day",
+    "hour",
+    "day_of_week",
+    "week_of_year",
+    "quarter",
+    "is_weekend",
+    "season",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "dow_sin",
+    "dow_cos",
+    "season_sin",
+    "season_cos",
+    "temperature_2m",
+    "apparent_temperature",
+    "relative_humidity_2m",
+    "dew_point_2m",
+    "precipitation",
+    "rain",
+    "snowfall",
+    "pressure_msl",
+    "wind_speed_10m",
+    "wind_gusts_10m",
+    "cloud_cover",
+    "shortwave_radiation",
+    "is_day",
+    "sunshine_duration",
+    "temp_sq",
+    "heat_index",
+    "wind_u",
+    "wind_v",
+    "solar_clear",
+    "lag_1h",
+    "lag_2h",
+    "lag_24h",
+    "lag_168h",
+    "roll_mean_24h",
+    "roll_std_24h",
+    "roll_mean_168h"
+  ],
+  "n_locations": 14,
+  "locations": {
+    "9q9p3yhbxx8t": "Oakland, California, USA",
+    "9tbqhgzj9gwc": "Phoenix, Arizona, USA",
+    "9v6kpy7zsbvx": "Austin, Texas, USA",
+    "9zvxvu65krxz": "Minneapolis, Minnesota, USA",
+    "djn4hpuvh93f": "Orlando, Florida, USA",
+    "dqcjr9e0bvw4": "Washington DC, USA",
+    "dr4vs1mpgc4v": "Princeton, New Jersey, USA",
+    "dr99e3temvdj": "Ithaca, New York, USA",
+    "f244jquzyjkb": "Ottawa, CA",
+    "gcjszrm15xgd": "Cardiff, UK",
+    "gcpvj4cmfb0f": "London, UK",
+    "gcpvj6btgb1d": "London, UK",
+    "sp1jpqedrbm7": "PT",
+    "u1krw2n6k8f6": "Groningen, NL"
+  },
+  "val_metrics": {
+    "rmse": 3160.911547576817,
+    "mae": 913.5883629920331,
+    "r2": 0.9978995622873622,
+    "mape": 5.023713738619125
+  },
+  "test_metrics": {
+    "rmse": 3432.77048699349,
+    "mae": 1032.5525390038863,
+    "r2": 0.9983687222780702,
+    "mape": 5.7471337852649285
+  },
+  "per_loc_metrics": {
+    "Oakland, California, USA": {
+      "r2": 0.9300929759466308,
+      "rmse": 668.0537548944862,
+      "mape": 2.0367841352885505
+    },
+    "Phoenix, Arizona, USA": {
+      "r2": 0.9244065819579483,
+      "rmse": 629.6826849977274,
+      "mape": 1.4558431057740069
+    },
+    "Austin, Texas, USA": {
+      "r2": 0.36324355928052976,
+      "rmse": 3716.9200029539797,
+      "mape": 43.046885012462695
+    },
+    "Minneapolis, Minnesota, USA": {
+      "r2": 0.9804387294543502,
+      "rmse": 959.4709042614348,
+      "mape": 1.4083200913374883
+    },
+    "Orlando, Florida, USA": {
+      "r2": 0.9466414171234533,
+      "rmse": 331.8816903995802,
+      "mape": 1.8232485536864935
+    },
+    "Washington DC, USA": {
+      "r2": 0.9661245022924483,
+      "rmse": 903.9978173969997,
+      "mape": 2.476984354928303
+    },
+    "Princeton, New Jersey, USA": {
+      "r2": 0.9601060776610915,
+      "rmse": 185.36165634063644,
+      "mape": 1.6976011926971266
+    },
+    "Ithaca, New York, USA": {
+      "r2": 0.9614084763605301,
+      "rmse": 406.6104664360625,
+      "mape": 1.1828965818885007
+    },
+    "Ottawa, CA": {
+      "r2": 0.9768007899491731,
+      "rmse": 68.5440490612827,
+      "mape": 5.965415782620025
+    },
+    "Cardiff, UK": {
+      "r2": 0.969190800413619,
+      "rmse": 221.65169866189763,
+      "mape": 6.8372499916276
+    },
+    "London, UK": {
+      "r2": 0.8706274118760148,
+      "rmse": 131.98963605584981,
+      "mape": 5.2176072883319735
+    },
+    "PT": {
+      "r2": 0.9897821634224189,
+      "rmse": 8872.81310266064,
+      "mape": 2.590326538405874
+    },
+    "Groningen, NL": {
+      "r2": 0.9769147396607636,
+      "rmse": 179.92121924118896,
+      "mape": 3.2485848618859627
+    }
+  },
+  "feature_importance": {
+    "lag_1h": 0.4056500494480133,
+    "lag_2h": 0.16433027386665344,
+    "roll_mean_24h": 0.15649685263633728,
+    "location_enc": 0.10654357075691223,
+    "year": 0.08545538783073425,
+    "lag_24h": 0.023520557209849358,
+    "lag_168h": 0.012350615113973618,
+    "roll_std_24h": 0.010045706294476986,
+    "lat": 0.006473857443779707,
+    "n_buildings_norm": 0.006229140795767307,
+    "month": 0.004132263828068972,
+    "lon": 0.0038645046297460794,
+    "week_of_year": 0.0030189291574060917,
+    "roll_mean_168h": 0.0007972916937433183,
+    "season_cos": 0.0005847506108693779,
+    "climate": 0.00046717640361748636,
+    "day": 0.00045952334767207503,
+    "temp_sq": 0.000427449558628723,
+    "heat_index": 0.0004243488365318626,
+    "wind_speed_10m": 0.0004187536833342165
+  },
+  "train_samples": 180305,
+  "val_samples": 38636,
+  "test_samples": 38646,
+  "best_iteration": 188,
+  "loc_stats": {
+    "9q9p3yhbxx8t": {
+      "demand_mean": 15836.124955528956,
+      "demand_std": 2309.8207084028427,
+      "demand_median": 15385.28935
+    },
+    "9tbqhgzj9gwc": {
+      "demand_mean": 20580.46692145463,
+      "demand_std": 2267.858703214279,
+      "demand_median": 20221.190000000002
+    },
+    "9v6kpy7zsbvx": {
+      "demand_mean": 22053.763241666667,
+      "demand_std": 5206.378906457461,
+      "demand_median": 21793.319000000003
+    },
+    "9zvxvu65krxz": {
+      "demand_mean": 34664.88729346215,
+      "demand_std": 7885.576173414356,
+      "demand_median": 33261.39035
+    },
+    "djn4hpuvh93f": {
+      "demand_mean": 9024.496452661879,
+      "demand_std": 4541.3247358688595,
+      "demand_median": 10598.71435
+    },
+    "dqcjr9e0bvw4": {
+      "demand_mean": 32733.228256953942,
+      "demand_std": 7863.9311747640795,
+      "demand_median": 31384.43
+    },
+    "dr4vs1mpgc4v": {
+      "demand_mean": 7188.97634007068,
+      "demand_std": 1292.272360983184,
+      "demand_median": 7158.26905
+    },
+    "dr99e3temvdj": {
+      "demand_mean": 14085.99601003192,
+      "demand_std": 4633.009108838073,
+      "demand_median": 14727.3625
+    },
+    "f244jquzyjkb": {
+      "demand_mean": 1155.8733688440493,
+      "demand_std": 446.40351691718786,
+      "demand_median": 1147.6875
+    },
+    "gcjszrm15xgd": {
+      "demand_mean": 2454.3230019891707,
+      "demand_std": 1796.296445594761,
+      "demand_median": 2133.4918
+    },
+    "gcpvj4cmfb0f": {
+      "demand_mean": 1788.4728921861608,
+      "demand_std": 1033.1616340563114,
+      "demand_median": 1746.8764996
+    },
+    "gcpvj6btgb1d": {
+      "demand_mean": 1805.848025061271,
+      "demand_std": 752.444113477984,
+      "demand_median": 1948.9267
+    },
+    "sp1jpqedrbm7": {
+      "demand_mean": 195550.34817680236,
+      "demand_std": 83896.49710311662,
+      "demand_median": 168249.0287035024
+    },
+    "u1krw2n6k8f6": {
+      "demand_mean": 3492.902416232545,
+      "demand_std": 1186.5272236325136,
+      "demand_median": 2976.21
+    }
+  },
+  "loc_enc_map": {
+    "9q9p3yhbxx8t": 0,
+    "9tbqhgzj9gwc": 1,
+    "9v6kpy7zsbvx": 2,
+    "9zvxvu65krxz": 3,
+    "djn4hpuvh93f": 4,
+    "dqcjr9e0bvw4": 5,
+    "dr4vs1mpgc4v": 6,
+    "dr99e3temvdj": 7,
+    "f244jquzyjkb": 8,
+    "gcjszrm15xgd": 9,
+    "gcpvj4cmfb0f": 10,
+    "gcpvj6btgb1d": 11,
+    "sp1jpqedrbm7": 12,
+    "u1krw2n6k8f6": 13
+  },
+  "split": "70/15/15 per-location chronological",
+  "interval": "1H (resampled)"
+}

@@ -1,0 +1,37 @@
+{
+  "model_type": "XGBoost Regressor (Coordinate-level)",
+  "features": [
+    "latitude",
+    "longitude",
+    "building_class_enc",
+    "cluster_size",
+    "temperature_2m",
+    "relative_humidity_2m",
+    "wind_speed_10m",
+    "pressure_msl",
+    "cloud_cover",
+    "shortwave_radiation",
+    "is_day",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "dow_sin",
+    "dow_cos",
+    "season_sin",
+    "season_cos",
+    "is_weekend",
+    "temp_sq",
+    "heat_index"
+  ],
+  "metrics": {
+    "r2": 0.014651897703823247,
+    "mae": 37.68663427304679,
+    "rmse": 388.7948838075316
+  },
+  "building_class_map": {
+    "Commercial": 0,
+    "Residential": 1
+  },
+  "n_samples": 3471383
+}
