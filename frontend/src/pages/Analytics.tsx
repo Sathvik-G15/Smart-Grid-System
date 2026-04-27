@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import {
-  BarChart, Bar, LineChart, Line, AreaChart, Area,
+  BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
 } from 'recharts';

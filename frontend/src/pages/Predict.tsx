@@ -19,7 +19,6 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconUrl: markerIcon, iconRetinaUrl: markerIcon2x, shadowUrl: markerShadow });
 
-const SEASONS = ['', 'Winter', 'Spring', 'Summer', 'Autumn'];
 const SEASON_EMOJI: Record<string, string> = {
   Winter: '❄️', Spring: '🌸', Summer: '☀️', Autumn: '🍂',
 };

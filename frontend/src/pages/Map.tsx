@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, Popup, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { api } from '../services/api';
@@ -41,7 +41,7 @@ function r2ToRadius(r2: number): number {
   return 8 + r2 * 14;
 }
 
-export default function Map() {
+export default function MapPage() {
   const { data: locations, loading } = useFetch(() => api.locations(), []);
   const { data: stats }              = useFetch(() => api.stats(), []);
   const [selected, setSelected]      = useState<string | null>(null);

@@ -10,7 +10,6 @@ import { Zap, TrendingUp, Thermometer, Wind, Activity, CalendarDays } from 'luci
 import type { DailyRecord } from '../types/api';
 import { format, subDays } from 'date-fns';
 
-const SEASON = ['', 'Winter', 'Spring', 'Summer', 'Autumn'];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload?.length) {
@@ -38,12 +37,11 @@ export default function Dashboard() {
     return locations.find(l => l.location_id === selLoc)?.location;
   }, [selLoc, locations]);
 
-  const end   = format(new Date(), 'yyyy-MM-dd');
-  const start = format(subDays(new Date(), 365), 'yyyy-MM-dd');
+
 
   const { data: daily,   loading: dl } = useFetch(() => api.daily({ location: locationName, limit: 365 }), [locationName]);
   const { data: monthly, loading: ml } = useFetch(() => api.monthly({ location: locationName }), [locationName]);
-  const { data: stats,   loading: sl } = useFetch(() => api.stats(), []);
+  const { data: stats }                  = useFetch(() => api.stats(), []);
   const { data: forecast             } = useFetch(() => api.forecast(selLoc || 'gcpvj4cmfb0f', 7), [selLoc]);
 
   const latest: DailyRecord | null = daily?.[daily.length - 1] ?? null;
