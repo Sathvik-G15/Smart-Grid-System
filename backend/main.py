@@ -328,8 +328,14 @@ def health():
     return {"status": "ok", "model": "XGBoost Multi-Location", "locations": METADATA['n_locations']}
 
 @app.get("/api/weather/{location_id}")
-def get_live_weather(location_id: str, lat: Optional[float] = None, lon: Optional[float] = None):
-    """Return current weather for a location from Open-Meteo (free, no key needed)."""
+def get_live_weather(
+    location_id: str,
+    lat:  Optional[float] = None,
+    lon:  Optional[float] = None,
+    date: Optional[str]   = None,
+    hour: Optional[int]   = None
+):
+    """Return weather for a location. If date is provided, returns forecast."""
     loc_meta = LOCATION_META.get(location_id)
     if not loc_meta:
         raise HTTPException(404, f"Unknown location_id: {location_id}")
@@ -337,7 +343,36 @@ def get_live_weather(location_id: str, lat: Optional[float] = None, lon: Optiona
     fetch_lat = lat if lat is not None else loc_meta['lat']
     fetch_lon = lon if lon is not None else loc_meta['lon']
 
-    w = fetch_live_weather(fetch_lat, fetch_lon)
+    # If date is provided, try to get forecast from batch data
+    if date:
+        try:
+            # Fetch 14 days of forecast to be safe
+            weather_data = fetch_multi_day_weather(fetch_lat, fetch_lon, days=14)
+            if weather_data and 'time' in weather_data:
+                h = hour if hour is not None else 12
+                target_time = f"{date}T{h:02d}:00"
+                if target_time in weather_data['time']:
+                    idx = weather_data['time'].index(target_time)
+                    w = {
+                        "temperature_2m":       weather_data['temperature_2m'][idx],
+                        "relative_humidity_2m": weather_data['relative_humidity_2m'][idx],
+                        "wind_speed_10m":       weather_data['wind_speed_10m'][idx],
+                        "pressure_msl":         weather_data['surface_pressure'][idx],
+                        "cloud_cover":          weather_data['cloud_cover'][idx],
+                        "apparent_temperature": weather_data['temperature_2m'][idx], # Fallback
+                        "shortwave_radiation":  weather_data['shortwave_radiation'][idx],
+                        "is_day":               1.0 if 6 <= h <= 20 else 0.0
+                    }
+                else:
+                    # Fallback to current weather if target time not found
+                    w = fetch_live_weather(fetch_lat, fetch_lon)
+            else:
+                w = fetch_live_weather(fetch_lat, fetch_lon)
+        except Exception:
+            w = fetch_live_weather(fetch_lat, fetch_lon)
+    else:
+        w = fetch_live_weather(fetch_lat, fetch_lon)
+
     if not w:
         raise HTTPException(503, "Weather service temporarily unavailable")
     loc_row = get_loc_row(location_id)

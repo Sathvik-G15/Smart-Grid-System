@@ -16,11 +16,11 @@ export const api = {
   locations: (): Promise<Location[]> =>
     API.get('/api/locations').then(r => r.data),
 
-  weather: (location_id: string, lat?: number, lon?: number): Promise<{
+  weather: (location_id: string, lat?: number, lon?: number, date?: string, hour?: number): Promise<{
     temperature_2m: number; relative_humidity_2m: number;
     wind_speed_10m: number; pressure_msl: number; cloud_cover: number;
     apparent_temperature: number; location: string;
-  }> => API.get(`/api/weather/${location_id}`, { params: { lat, lon } }).then(r => r.data),
+  }> => API.get(`/api/weather/${location_id}`, { params: { lat, lon, date, hour } }).then(r => r.data),
 
   predict: (req: PredictRequest): Promise<PredictResponse> =>
     API.post('/api/predict', req).then(r => r.data),

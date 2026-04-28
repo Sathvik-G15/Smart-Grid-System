@@ -92,11 +92,11 @@ export default function Predict() {
 
   const set = (k: string, v: unknown) => setForm(f => ({ ...f, [k]: v }));
 
-  // Auto-fetch weather when location changes
+  // Auto-fetch weather when location, date, or hour changes
   useEffect(() => {
     setWeatherFetched(false);
-    fetchWeather(form.location_id, customLat, customLon);
-  }, [form.location_id]);
+    fetchWeather(form.location_id, customLat, customLon, form.date, Number(form.hour));
+  }, [form.location_id, form.date, form.hour]);
 
   function handleCityChange(locId: string) {
     set('location_id', locId);
@@ -107,16 +107,13 @@ export default function Predict() {
   function handleMapClick(lat: number, lng: number) {
     setCustomLat(lat);
     setCustomLon(lng);
-    fetchWeather(form.location_id, lat, lng);
+    fetchWeather(form.location_id, lat, lng, form.date, Number(form.hour));
   }
 
-  async function fetchWeather(locId: string, lat?: number | null, lon?: number | null) {
+  async function fetchWeather(locId: string, lat?: number | null, lon?: number | null, date?: string, hour?: number) {
     setFetchingWeather(true);
     try {
-      const q = (lat !== undefined && lat !== null && lon !== undefined && lon !== null) 
-        ? `?lat=${lat}&lon=${lon}` : '';
-      const r = await axios.get(`http://localhost:8000/api/weather/${locId}${q}`);
-      const w = r.data;
+      const w = await api.weather(locId, lat ?? undefined, lon ?? undefined, date, hour);
       setForm(f => ({
         ...f,
         temperature_2m:       String(w.temperature_2m.toFixed(1)),
@@ -126,7 +123,9 @@ export default function Predict() {
         cloud_cover:          String(Math.round(w.cloud_cover)),
       }));
       setWeatherFetched(true);
-      toast.success(lat ? `Live weather loaded for custom pin` : `Live weather loaded for ${w.location}`, { icon: '🌤️' });
+      const locLabel = lat ? `custom pin` : w.location;
+      const dateLabel = date ? ` for ${date}` : '';
+      toast.success(`Live forecast loaded for ${locLabel}${dateLabel}`, { icon: '🌤️' });
     } catch {
       toast.error('Could not fetch live weather — you can enter values manually');
     } finally {
