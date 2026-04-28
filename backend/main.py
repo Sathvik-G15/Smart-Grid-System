@@ -12,6 +12,8 @@ from typing import Optional, List
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 BASE_DIR = os.path.dirname(__file__)
@@ -479,6 +481,21 @@ def get_forecast(
             "avg_kwh":  round(sum(r['predicted_kwh'] for r in day_results) / len(day_results), 1),
         })
     return results
+
+# ── Serve Frontend ──────────────────────────────────────────────────────────────
+frontend_dist = os.path.join(os.path.dirname(BASE_DIR), 'frontend', 'dist')
+if os.path.isdir(os.path.join(frontend_dist, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    file_path = os.path.join(frontend_dist, full_path)
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+    index_path = os.path.join(frontend_dist, "index.html")
+    if os.path.isfile(index_path):
+        return FileResponse(index_path)
+    return {"message": "API is running. Frontend build not found."}
 
 if __name__ == "__main__":
     import uvicorn

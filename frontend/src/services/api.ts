@@ -5,7 +5,7 @@ import type {
   FeatureImportance, ForecastDay,
 } from '../types/api';
 
-const API = axios.create({ baseURL: 'http://localhost:8000', timeout: 20000 });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_URL || '', timeout: 20000 });
 
 export const api = {
   health: () => API.get('/api/health').then(r => r.data),
