@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react';
 import { api } from '../services/api';
 import { useFetch } from '../hooks/useFetch';
 import type { PredictResponse } from '../types/api';
-import axios from 'axios';
 import { MapContainer, TileLayer, CircleMarker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
