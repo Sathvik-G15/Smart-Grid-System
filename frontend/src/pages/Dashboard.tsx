@@ -8,7 +8,7 @@ import { useFetch } from '../hooks/useFetch';
 import StatCard from '../components/StatCard';
 import { Zap, TrendingUp, Thermometer, Wind, Activity, CalendarDays } from 'lucide-react';
 import type { DailyRecord } from '../types/api';
-import { format, subDays } from 'date-fns';
+import { format } from 'date-fns';
 
 
 const CustomTooltip = ({ active, payload, label }: any) => {

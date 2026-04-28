@@ -94,6 +94,24 @@ def fetch_live_weather(lat: float, lon: float) -> dict | None:
         print(f"[Weather] Open-Meteo fetch failed: {e}")
         return None
 
+def fetch_multi_day_weather(lat: float, lon: float, days: int = 7) -> dict | None:
+    """Fetch hourly weather forecast for multiple days from Open-Meteo."""
+    try:
+        params = {
+            "latitude":        lat,
+            "longitude":       lon,
+            "hourly":          "temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure,cloud_cover,shortwave_radiation",
+            "wind_speed_unit": "kmh",
+            "timezone":        "auto",
+            "forecast_days":   days,
+        }
+        r = req.get(OPEN_METEO_URL, params=params, timeout=10)
+        r.raise_for_status()
+        return r.json().get("hourly", {})
+    except Exception as e:
+        print(f"[Weather] Multi-day fetch failed: {e}")
+        return None
+
 def get_season(month: int) -> int:
     if month in [12, 1, 2]: return 1
     elif month in [3, 4, 5]: return 2
@@ -196,7 +214,7 @@ def build_coordinate_feature_row(req: PredictRequest) -> dict:
         'heat_index':            heat_index,
     }
 
-def build_feature_row(req: PredictRequest) -> dict:
+def build_feature_row(req: PredictRequest, provided_weather: dict | None = None) -> dict:
     dt  = datetime.strptime(req.date, "%Y-%m-%d")
     dow = dt.weekday()
     loc = get_loc_row(req.location_id)
@@ -217,7 +235,9 @@ def build_feature_row(req: PredictRequest) -> dict:
     lon_val   = req.custom_lon if req.custom_lon is not None else loc_meta['lon']
 
     live_weather = None
-    if not any_weather_provided:
+    if provided_weather:
+        live_weather = provided_weather
+    elif not any_weather_provided:
         live_weather = fetch_live_weather(lat_val, lon_val)
 
     lk_w = DEMAND_LK[(DEMAND_LK['location_id'] == req.location_id) &
@@ -463,19 +483,45 @@ def get_forecast(
     location_id: str = Query("gcpvj4cmfb0f"),
     days:        int = Query(7, ge=1, le=14),
 ):
+    loc_meta = LOCATION_META.get(location_id, {'lat': 0.0, 'lon': 0.0})
+    weather_data = fetch_multi_day_weather(loc_meta['lat'], loc_meta['lon'], days)
+    
     today   = date.today()
     results = []
+    
     for d in range(1, days + 1):
         target = today + timedelta(days=d)
+        target_str = str(target)
         day_results = []
+        
         for hour in [6, 9, 12, 15, 18, 21]:
-            req  = PredictRequest(location_id=location_id, date=str(target), hour=hour)
-            row  = build_feature_row(req)
+            # Try to find weather in batch data
+            provided_w = None
+            if weather_data and 'time' in weather_data:
+                target_time = f"{target_str}T{hour:02d}:00"
+                try:
+                    idx = weather_data['time'].index(target_time)
+                    provided_w = {
+                        "temperature_2m":       weather_data['temperature_2m'][idx],
+                        "relative_humidity_2m": weather_data['relative_humidity_2m'][idx],
+                        "wind_speed_10m":       weather_data['wind_speed_10m'][idx],
+                        "pressure_msl":         weather_data['surface_pressure'][idx],
+                        "cloud_cover":          weather_data['cloud_cover'][idx],
+                        "shortwave_radiation":  weather_data['shortwave_radiation'][idx],
+                    }
+                except (ValueError, KeyError, IndexError):
+                    pass
+
+            req  = PredictRequest(location_id=location_id, date=target_str, hour=hour)
+            row  = build_feature_row(req, provided_weather=provided_w)
             X    = pd.DataFrame([row])[FEATURES]
             pred = float(np.expm1(MODEL.predict(X)[0]))
             day_results.append({"hour": hour, "hour_label": f"{hour:02d}:00", "predicted_kwh": round(pred, 1)})
+        
+        if not day_results: continue
+        
         results.append({
-            "date":     str(target),
+            "date":     target_str,
             "periods":  day_results,
             "peak_kwh": max(r['predicted_kwh'] for r in day_results),
             "avg_kwh":  round(sum(r['predicted_kwh'] for r in day_results) / len(day_results), 1),
